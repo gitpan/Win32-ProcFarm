@@ -10,8 +10,10 @@ Samples/DirParent.pl
 Samples/LoggedInChild.pl
 Samples/PingChild.pl
 Samples/PingFeedback.pl
+Samples/PingInconsistentChild.pl
 Samples/PingParent.pl
 Samples/PingParent_Tk.pl
+Samples/PingPerpetual.pl
 Samples/PingPersistent.pl
 Samples/PingTimeoutChild.pl
 Samples/PingTimeoutParent.pl

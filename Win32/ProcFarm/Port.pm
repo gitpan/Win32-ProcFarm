@@ -3,7 +3,7 @@
 # Win32::ProcFarm::Port - manages access to the TCP port for ProcFarm system
 #
 # Author: Toby Everett
-# Revision: 2.12
+# Revision: 2.13
 # Last Change: Namespace change
 #############################################################################
 # Copyright 1999, 2000, 2001 Toby Everett.  All rights reserved.
@@ -51,7 +51,7 @@ package Win32::ProcFarm::Port;
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.12';
+$VERSION = '2.13';
 
 =head2 new
 
@@ -68,6 +68,7 @@ sub new {
   my $self = {
     'port_num' => $port_num,
     'port' => undef,
+    'listeners' => $count,
   };
 
   $self->{port} = IO::Socket::INET->new(LocalPort => $self->{port_num}, Proto => 'tcp',
@@ -86,6 +87,17 @@ This returns the port number passed in the C<new> method.
 sub get_port_num {
   my $self = shift;
   return $self->{port_num};
+}
+
+=head2 get_listeners
+
+This returns the number of listeners created in the C<new> method.
+
+=cut
+
+sub get_listeners {
+  my $self = shift;
+  return $self->{listeners};
 }
 
 =head2 get_next_connection

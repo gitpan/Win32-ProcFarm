@@ -198,3 +198,54 @@ dirty timing results.
   sub get_timer {
     return (Win32::GetTickCount()-$start_clock)/1000;
   }
+
+=head1 Rudimentary Docs on a few things to think about
+
+=head2 C<Win32::ProcFarm::PerpetualPool.pm>
+
+Normal pools are designed for the problem: "I have this list of jobs to do.
+Execute all of them and display/record/summarize the results."
+
+Perpetual pools are designed for the problem: "I want to monitor this
+(possible changing, but largely static) list of machines/accounts/entities
+steadily and display/record/summarize the results continually."
+
+In a normal pool, jobs move from the waiting_pool to the thread_pool and then
+disappear (although the results are added to the results hash).  In a
+perpetual pool, jobs move from the waiting_pool to the thread_pool, but when
+they finish they move back into the waiting_pool.  Every so often, a
+subroutine is run that updates the list of machines/account/entities being
+executed, and the perpetual pool code takes care of adding new ones into the
+waiting_pool and when the delete ones show up for execution, they get purged.
+
+If your problem falls into the second category, take a look at the
+PingPerpetual.pl sample.
+
+
+=head2 Think about setting a timeout value
+
+The support for timeouts on child process job execution sits at a fairly low
+level in the code base - it's actually in the C<Win32::ProcFarm::Parent> code.
+This means you don't even have to use a pool to make use of the support.  If
+you have a problem where you don't need parallelization support, but you have
+code that keeps hanging, you can use split your code into two parts and use a
+Win32::ProcFarm::Parent object to take care of the killing the child process
+when it takes too long to do something.
+
+
+=head2 Check out result_sub
+
+If you want to be able to return the results asychronously as the jobs
+execute, result_sub is your friend.  You've probably noticed that printing to
+STDOUT from child processes is a big no-no - you end up with merged and mixed
+up output.  Use result_sub - it's available in C<Win32::ProcFarm::Pool> and
+C<Win32::ProcFarm::PerpetualPool>.  It's not in C<Win32::ProcFarm::TkPool>,
+but that has support for independent callbacks on every job instead.
+
+=head2 Think about max_rate
+
+If you have jobs that take a variable amount of time to execute, but you want
+them started on a fairly consistent schedule, look at max_rate.  It's only
+available with C<Win32::ProcFarm::Pool>, but it allows you to restrict the
+rate at which jobs are started (which can be useful if those jobs cause other
+machines to impose a load on a shared resource).

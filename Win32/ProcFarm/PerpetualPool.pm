@@ -3,8 +3,8 @@
 # Win32::ProcFarm::PerpetualPool - manages a pool of child processes for perpetual jobs
 #
 # Author: Toby Everett
-# Revision: 2.12
-# Last Change: Created
+# Revision: 2.13
+# Last Change: Patched to fix problems when Win32::GetTickCount > 2**31
 #############################################################################
 # Copyright 1999, 2000 Toby Everett.  All rights reserved.
 #
@@ -68,7 +68,7 @@ package Win32::ProcFarm::PerpetualPool;
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.12';
+$VERSION = '2.13';
 
 @ISA = qw(Win32::ProcFarm::Pool);
 
@@ -78,14 +78,14 @@ sub new {
   my($num_threads, $port_num, $script, $curdir, %options) = @_;
   my $self = $class->SUPER::new($num_threads, $port_num, $script, $curdir, %options);
 
-  foreach my $i (qw(command list_check_intvl list_sub exit_check_intvl exit_sub return_sub)) {
+  foreach my $i (qw(command list_check_intvl list_sub exit_check_intvl exit_sub)) {
     exists $options{$i} and $self->{$i} = $options{$i};
   }
 
   $self->{current_hash} = {};
   $self->{death_hash} = {};
-  $self->{next_list_check} = 0;
-  $self->{next_exit_check} = 0;
+  $self->{next_list_check} = Win32::GetTickCount();
+  $self->{next_exit_check} = Win32::GetTickCount();
   $self->{state} = 'running';
   defined $self->{list_check_intvl} or $self->{list_check_intvl} = 60;
   defined $self->{exit_check_intvl} or $self->{exit_check_intvl} = 2;
@@ -101,8 +101,6 @@ sub list_check {
 
   my %temp;
   @temp{$self->{list_sub}->($self)} = ();
-
-  print "Updating list.\n";
 
   foreach my $i (keys %temp) {
     if (!exists $self->{current_hash}->{$i}) {
@@ -196,7 +194,7 @@ sub get_next_job {
   my $self = shift;
 
   my $job;
-  while ($job = pop(@{$self->{waiting_pool}})) {
+  while ($job = shift(@{$self->{waiting_pool}})) {
     if (exists $self->{death_hash}->{$job->{key}}) {
       delete $self->{death_hash}->{$job->{key}};
       next;

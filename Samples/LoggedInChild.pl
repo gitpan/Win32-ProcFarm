@@ -19,7 +19,7 @@ sub ping {
   return 1;
 }
 
-#nslookup will execute a gethostbyname on the passed value, in the wins space
+#nslookup will execute a gethostbyname on the passed value
 
 sub nslookup {
   my($name) = @_;

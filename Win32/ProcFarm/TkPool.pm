@@ -4,7 +4,7 @@
 #                           callbacks under a Tk event loop
 #
 # Author: Toby Everett
-# Revision: 2.12
+# Revision: 2.13
 # Last Change: Modified in response to rearchitecture of Win32::ProcFarm::Pool
 #############################################################################
 # Copyright 1999, 2000, 2001 Toby Everett.  All rights reserved.
@@ -41,7 +41,7 @@ package Win32::ProcFarm::TkPool;
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.12';
+$VERSION = '2.13';
 
 @ISA = qw(Win32::ProcFarm::Pool);
 
@@ -68,7 +68,7 @@ sub add_waiting_job {
   my $self = shift;
   my(%params) = @_;
 
-  unshift(@{$self->{waiting_pool}}, {%params});
+  push(@{$self->{waiting_pool}}, {%params});
 }
 
 sub cleanse_thread {

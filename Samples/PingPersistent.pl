@@ -1,11 +1,13 @@
 use Win32::ProcFarm::Pool;
 
+use strict;
+
 @ARGV == 1 or die "Pass me the number of threads you wish to create.\n";
 
-$poolsize = $ARGV[0];
+my $poolsize = $ARGV[0];
 print "Creating pool with $poolsize threads . . .\n"; &set_timer;
 
-$Pool = Win32::ProcFarm::Pool->new($poolsize, 9000, 'PingChild.pl', Win32::GetCwd);
+my $Pool = Win32::ProcFarm::Pool->new($poolsize, 9000, 'PingChild.pl', Win32::GetCwd);
 print "Pool created in ".&get_timer." seconds.\n";
 
 while (1) {
@@ -42,10 +44,14 @@ while (1) {
   $Pool->clear_return_data;
 }
 
-sub set_timer {
-  $start_clock = Win32::GetTickCount();
-}
+{
+  my $start_clock;
 
-sub get_timer {
-  return (Win32::GetTickCount()-$start_clock)/1000;
+  sub set_timer {
+    $start_clock = Win32::GetTickCount();
+  }
+
+  sub get_timer {
+    return (Win32::GetTickCount()-$start_clock)/1000;
+  }
 }
