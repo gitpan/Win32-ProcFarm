@@ -1,0 +1,13 @@
+Revision history for Perl extension Win32::ProcFarm
+
+2.10  Wed Feb 14 12:00:00 2001
+        - Added Win32::ProcFarm::PerpetualPool
+        - Lots of bugs cleaned up
+        - Rearchitected Win32::ProcFarm::Pool to make subclassing easier
+          (factored the code more completely)
+        - Modified Win32::ProcFarm::TkPool to reflect the rearchitecture
+        - Even more bugs cleaned up
+
+2.00  Tue Aug  1 12:00:00 2000
+        - first to-be-but-never-CPANed release in Win32::ProcFarm namespace
+
