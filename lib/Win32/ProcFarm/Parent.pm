@@ -3,7 +3,7 @@
 # Win32::ProcFarm::Parent - stand-in for child process in ProcFarm RPC system
 #
 # Author: Toby Everett
-# Revision: 2.14
+# Revision: 2.15
 # Last Change: Added support for exe-based child process
 #############################################################################
 # Copyright 1999, 2000, 2001 Toby Everett.  All rights reserved.
@@ -22,23 +22,23 @@ Win32::ProcFarm::Parent - stand-in for child process in ProcFarm RPC system
 
 =head1 SYNOPSIS
 
-  use Win32::ProcFarm::Parent;
-  use Win32::ProcFarm::Port;
+	use Win32::ProcFarm::Parent;
+	use Win32::ProcFarm::Port;
 
-  $port_obj = Win32::ProcFarm::Port->new(9000, 1);
+	$port_obj = Win32::ProcFarm::Port->new(9000, 1);
 
-  $iface = Win32::ProcFarm::Parent->new_async($port_obj, 'Child.pl', Win32::GetCwd);
+	$iface = Win32::ProcFarm::Parent->new_async($port_obj, 'Child.pl', Win32::GetCwd);
 
-  $iface->connect;
+	$iface->connect;
 
-  $iface->execute('child_sub', @params);
+	$iface->execute('child_sub', @params);
 
-  until($iface->get_state eq 'fin') {
-    print "Waiting for ReturnValue.\n";
-    sleep(1);
-  }
-  print "GotReturnValue.\n";
-  print $iface->get_retval;
+	until($iface->get_state eq 'fin') {
+		print "Waiting for ReturnValue.\n";
+		sleep(1);
+	}
+	print "GotReturnValue.\n";
+	print $iface->get_retval;
 
 =head1 DESCRIPTION
 
@@ -99,7 +99,7 @@ package Win32::ProcFarm::Parent;
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.14';
+$VERSION = '2.15';
 
 $Win32::ProcFarm::Parent::unique = 0;
 $Win32::ProcFarm::Parent::processes = {};
@@ -137,45 +137,45 @@ have blocked.  Blocked jobs will be terminated and a new process created to take
 =cut
 
 sub new_async {
-  my $class = shift;
-  my($port_obj, $script, $curdir, $timeout) = @_;
+	my $class = shift;
+	my($port_obj, $script, $curdir, $timeout) = @_;
 
-  my $self = {
-    'port_obj' => $port_obj,
-    'rin' => undef,
-    'socket' => undef,
-    'state' => undef,
-    'timeout' => $timeout,
-    'start' => undef,
-    'retval' => undef,
-    'script' => $script,
-    'curdir' => $curdir,
-  };
-  bless $self, $class;
+	my $self = {
+		'port_obj' => $port_obj,
+		'rin' => undef,
+		'socket' => undef,
+		'state' => undef,
+		'timeout' => $timeout,
+		'start' => undef,
+		'retval' => undef,
+		'script' => $script,
+		'curdir' => $curdir,
+	};
+	bless $self, $class;
 
-  $self->_new_async;
+	$self->_new_async;
 
-  return $self;
+	return $self;
 }
 
 sub _new_async {
-  my $self = shift;
+	my $self = shift;
 
-  my $process;
-  my $unique = $Win32::ProcFarm::Parent::unique++;
-  my $port_num = $self->{port_obj}->get_port_num;
-  my $script = $self->{script};
-  if ($script =~ /\.exe$/i) {
-    Win32::Process::Create($process, $script, "$script $port_num $unique", 0, 0, $self->{curdir}) or
-        die "Unable to start child process using '$script'.\n";
-  } else {
-    (my $perl_exe = $^X) =~ s/\\[^\\]+$/\\Perl.exe/;
-    Win32::Process::Create($process, $perl_exe, "perl $script $port_num $unique", 0, 0, $self->{curdir}) or
-        die "Unable to start child process using '$perl_exe'.\n";
-  }
-  $Win32::ProcFarm::Parent::processes->{$unique} = $process;
-  $self->{state} = 'init';
-  return $self;
+	my $process;
+	my $unique = $Win32::ProcFarm::Parent::unique++;
+	my $port_num = $self->{port_obj}->get_port_num;
+	my $script = $self->{script};
+	if ($script =~ /\.exe$/i) {
+		Win32::Process::Create($process, $script, "$script $port_num $unique", 0, 0, $self->{curdir}) or
+				die "Unable to start child process using '$script'.\n";
+	} else {
+		(my $perl_exe = $^X) =~ s/\\[^\\]+$/\\Perl.exe/;
+		Win32::Process::Create($process, $perl_exe, "perl $script $port_num $unique", 0, 0, $self->{curdir}) or
+				die "Unable to start child process using '$perl_exe'.\n";
+	}
+	$Win32::ProcFarm::Parent::processes->{$unique} = $process;
+	$self->{state} = 'init';
+	return $self;
 }
 
 =head2 connect
@@ -191,21 +191,21 @@ The C<connect> call moves the C<Win32::ProcFarm::Parent> object into the C<idle>
 =cut
 
 sub connect {
-  my $self = shift;
+	my $self = shift;
 
-  $self->{state} eq 'init' or die "Illegal call to connect on Win32::ProcFarm::Parent object in state $self->{state}.";
-  $self->{socket} = $self->{port_obj}->get_next_connection;
+	$self->{state} eq 'init' or die "Illegal call to connect on Win32::ProcFarm::Parent object in state $self->{state}.";
+	$self->{socket} = $self->{port_obj}->get_next_connection;
 
-  my $unique;
-  read($self->{socket}, $unique, 4) == 4 or die "Unable to read unique identifier.\n";
-  $unique = unpack("V", $unique);
-  exists $Win32::ProcFarm::Parent::processes->{$unique} or die "Missing process object for $unique.";
-  $self->{process_obj} = $Win32::ProcFarm::Parent::processes->{$unique};
-  delete $Win32::ProcFarm::Parent::processes->{$unique};
+	my $unique;
+	read($self->{socket}, $unique, 4) == 4 or die "Unable to read unique identifier.\n";
+	$unique = unpack("V", $unique);
+	exists $Win32::ProcFarm::Parent::processes->{$unique} or die "Missing process object for $unique.";
+	$self->{process_obj} = $Win32::ProcFarm::Parent::processes->{$unique};
+	delete $Win32::ProcFarm::Parent::processes->{$unique};
 
-  $self->{rin} = '';
-  vec($self->{rin}, fileno($self->{socket}), 1) = 1;
-  $self->{state} = 'idle';
+	$self->{rin} = '';
+	vec($self->{rin}, fileno($self->{socket}), 1) = 1;
+	$self->{state} = 'idle';
 }
 
 =head2 execute
@@ -217,15 +217,15 @@ C<Win32::ProcFarm::Parent> object moved into the C<wait> state.
 =cut
 
 sub execute {
-  my $self = shift;
-  my($command, @params) = @_;
+	my $self = shift;
+	my($command, @params) = @_;
 
-  $self->{state} eq 'idle' or die "Illegal call to execute on Win32::ProcFarm::Parent object in state $self->{state}.";
-  my $cmdstr = Data::Dumper->Dump([$command, \@params], ["command", "ptr2params"]);
-  my $temp = $self->{socket};
-  print $temp (pack("V", length($cmdstr)).$cmdstr);
-  $self->{start} = Win32::GetTickCount();
-  $self->{state} = 'wait';
+	$self->{state} eq 'idle' or die "Illegal call to execute on Win32::ProcFarm::Parent object in state $self->{state}.";
+	my $cmdstr = Data::Dumper->Dump([$command, \@params], ["command", "ptr2params"]);
+	my $temp = $self->{socket};
+	print $temp (pack("V", length($cmdstr)).$cmdstr);
+	$self->{start} = Win32::GetTickCount();
+	$self->{state} = 'wait';
 }
 
 =head2 get_state
@@ -243,21 +243,21 @@ C<Win32::ProcFarm::Parent> object placed in the C<fin> state.
 =cut
 
 sub get_state {
-  my $self = shift;
+	my $self = shift;
 
-  if ($self->{state} eq 'wait') {
-    my $rout;
-    select($rout=$self->{rin}, undef, undef, 0);
-    if ($rout eq $self->{rin}) {
-      $self->{retval} = $self->_get_retval;
-      $self->{state} = 'fin';
-    } else {
-      if ($self->{timeout} and Win32::ProcFarm::TickCount::compare(1000*$self->{timeout}+$self->{start}, Win32::GetTickCount()) == -1) {
-        $self->_reset();
-      }
-    }
-  }
-  return $self->{state};
+	if ($self->{state} eq 'wait') {
+		my $rout;
+		select($rout=$self->{rin}, undef, undef, 0);
+		if ($rout eq $self->{rin}) {
+			$self->{retval} = $self->_get_retval;
+			$self->{state} = 'fin';
+		} else {
+			if ($self->{timeout} and Win32::ProcFarm::TickCount::compare(1000*$self->{timeout}+$self->{start}, Win32::GetTickCount()) == -1) {
+				$self->_reset();
+			}
+		}
+	}
+	return $self->{state};
 }
 
 =head2 get_retval
@@ -268,63 +268,63 @@ the C<Win32::ProcFarm::Parent> object into the C<idle> state.
 =cut
 
 sub get_retval {
-  my $self = shift;
+	my $self = shift;
 
-  $self->{state} eq 'fin' or die "Illegal call to get_retval on Win32::ProcFarm::Parent object in state $self->{state}.";
-  my $temp = $self->{retval};
-  $self->{retval} = undef;
-  $self->{state} = 'idle';
-  return(@{$temp});
+	$self->{state} eq 'fin' or die "Illegal call to get_retval on Win32::ProcFarm::Parent object in state $self->{state}.";
+	my $temp = $self->{retval};
+	$self->{retval} = undef;
+	$self->{state} = 'idle';
+	return(@{$temp});
 }
 
 sub _get_retval {
-  my $self = shift;
-  my($len, $retstr);
+	my $self = shift;
+	my($len, $retstr);
 
-  unless (read($self->{socket}, $len, 4) == 4) {
-    $self->_reset;
-    return [];
-  }
-  $len = unpack("V", $len);
-  unless (read($self->{socket}, $retstr, $len) == $len) {
-    $self->_reset;
-    return [];
-  }
+	unless (read($self->{socket}, $len, 4) == 4) {
+		$self->_reset;
+		return [];
+	}
+	$len = unpack("V", $len);
+	unless (read($self->{socket}, $retstr, $len) == $len) {
+		$self->_reset;
+		return [];
+	}
 
-  my $ptr2retval;
-  eval($retstr);
-  return $ptr2retval;
+	my $ptr2retval;
+	eval($retstr);
+	return $ptr2retval;
 }
 
 sub _reset {
-  my $self = shift;
+	my $self = shift;
 
-  close($self->{socket});
-  unless ($self->{process_obj}->Wait(1)) {
-    $self->{process_obj}->Kill(0);
-  }
-  $self->_new_async;
-  $self->connect;
-  $self->{retval} = [];
-  $self->{state} = 'fin';
+	close($self->{socket});
+	unless ($self->{process_obj}->Wait(1)) {
+		$self->{process_obj}->Kill(0);
+	}
+	$self->_new_async;
+	$self->connect;
+	$self->{retval} = [];
+	$self->{state} = 'fin';
 }
 
 sub DESTROY {
-  my $self = shift;
+	my $self = shift;
 
-  foreach my $i (values %{$Win32::ProcFarm::Parent::processes}) {
-    unless ($i->Wait(1)) {
-      $i->Kill(0);
-    }
-  }
-  $Win32::ProcFarm::Parent::processes = {};
+	foreach my $i (values %{$Win32::ProcFarm::Parent::processes}) {
+		unless ($i->Wait(1)) {
+			$i->Kill(0);
+		}
+	}
+	$Win32::ProcFarm::Parent::processes = {};
 
-  $self->{socket} and close($self->{socket});
-  if ($self->{process_obj}) {
-    unless ($self->{process_obj}->Wait(1)) {
-      $self->{process_obj}->Kill(0);
-    }
-  }
+	$self->{socket} and close($self->{socket});
+	if ($self->{process_obj}) {
+		unless ($self->{process_obj}->Wait(1)) {
+			$self->{process_obj}->Kill(0);
+		}
+	}
 }
 
 1;

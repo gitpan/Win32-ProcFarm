@@ -1,5 +1,8 @@
 Revision history for Perl extension Win32::ProcFarm
 
+2.15  Fri Jan  9 2004
+      -	Added parens to my line in Child.pl to eliminate warning.
+
 2.14  Wed Jan  7 2004
       -	Added support for using an executable (i.e. PerlApp
 	based) for the child processes.
