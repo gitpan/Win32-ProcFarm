@@ -5,6 +5,13 @@ README
 test.pl
 Docs/overview.pod
 Docs/tutorial.pod
+lib/Win32/ProcFarm/Child.pl
+lib/Win32/ProcFarm/Parent.pm
+lib/Win32/ProcFarm/PerpetualPool.pm
+lib/Win32/ProcFarm/Pool.pm
+lib/Win32/ProcFarm/Port.pm
+lib/Win32/ProcFarm/TickCount.pm
+lib/Win32/ProcFarm/TkPool.pm
 Samples/DirChild.pl
 Samples/DirParent.pl
 Samples/LoggedInChild.pl
@@ -17,10 +24,3 @@ Samples/PingPerpetual.pl
 Samples/PingPersistent.pl
 Samples/PingTimeoutChild.pl
 Samples/PingTimeoutParent.pl
-Win32/ProcFarm/Child.pl
-Win32/ProcFarm/Parent.pm
-Win32/ProcFarm/PerpetualPool.pm
-Win32/ProcFarm/Pool.pm
-Win32/ProcFarm/Port.pm
-Win32/ProcFarm/TickCount.pm
-Win32/ProcFarm/TkPool.pm

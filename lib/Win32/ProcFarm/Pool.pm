@@ -3,7 +3,7 @@
 # Win32::ProcFarm::Pool - manages a pool of child processes
 #
 # Author: Toby Everett
-# Revision: 2.13
+# Revision: 2.14
 # Last Change: Update to support max_rate and result_sub
 #############################################################################
 # Copyright 1999, 2000, 2001 Toby Everett.  All rights reserved.
@@ -66,7 +66,7 @@ package Win32::ProcFarm::Pool;
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.13';
+$VERSION = '2.14';
 
 =head2 new
 

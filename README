@@ -4,7 +4,7 @@ NAME
 OVERVIEW
   What is Win32::ProcFarm?
 
-    `Win32::ProcFarm' is the code I wrote to speed up tasks that are limited
+    "Win32::ProcFarm" is the code I wrote to speed up tasks that are limited
     by network latency, but not by network bandwidth or local computer
     power. For instance, say you want to ping every address on a subnet. The
     simple approach (excluding pinging the broadcast address) is to
@@ -19,7 +19,7 @@ OVERVIEW
     addresses, and funnel the information back into a single process for
     reporting.
 
-    This is the approach `Win32::ProcFarm' takes, but it is somewhat more
+    This is the approach "Win32::ProcFarm" takes, but it is somewhat more
     sophisticated. A "pool" of processes is created that communicate with
     the parent process using TCP sockets. The parent process communicates
     with the child processes using a "RPC" style library to assign tasks to
@@ -29,27 +29,27 @@ OVERVIEW
     communications routines, as well as whatever subroutines pertain to the
     problem at hand. The parent process spins off the child process, which
     then connects back to the parent process through a TCP port. The parent
-    process uses `Data::Dumper' to package up the desired subroutine name
+    process uses "Data::Dumper" to package up the desired subroutine name
     along with any associated parameters and ships it off to the child
     process. The child process then executes that subroutine and uses
-    `Data::Dumper' to package up the return values and send them back to the
+    "Data::Dumper" to package up the return values and send them back to the
     parent. What makes the library useful is that the child process can
     operate asynchronously from the parent; the parent simply calls
-    `execute' to instruct the child process to execute a subroutine. The
-    parent process can then periodically call `get_state', which will return
-    `wait' while the child process is still executing the subroutine. When
+    "execute" to instruct the child process to execute a subroutine. The
+    parent process can then periodically call "get_state", which will return
+    "wait" while the child process is still executing the subroutine. When
     the child process finishes and ships the return values back up the
-    socket, the `get_state' method call on the parent object will return the
-    `fin' state. The parent then calls `get_retval' to obtain the returned
+    socket, the "get_state" method call on the parent object will return the
+    "fin" state. The parent then calls "get_retval" to obtain the returned
     values, and the child process can then be used to execute another task.
 
     The pool system is based upon this simplistic "RPC" system. To use the
-    `Win32::ProcFarm::Pool' object, one simply creates a new pool, passing
+    "Win32::ProcFarm::Pool" object, one simply creates a new pool, passing
     it the number of child processes to start as well as the name of the
     child process and a few other parameters. Once the pool has been
     created, one adds jobs to the waiting pool. This might be a list of IP
     addresses to ping, for instance. Then one tells the
-    `Win32::ProcFarm::Pool' object to execute all the jobs. The pool assigns
+    "Win32::ProcFarm::Pool" object to execute all the jobs. The pool assigns
     a job to each of the child processes until all the child processes are
     busy. It then checks the child processes periodically to see if they
     have finished with the task. If they have, it places the return values
@@ -76,7 +76,7 @@ OVERVIEW
 
     Low probability of child process orphaning
         Because the code to kill the child processes when everything is over
-        is implemented in the `DESTROY' for the parent, orphaning is a rare
+        is implemented in the "DESTROY" for the parent, orphaning is a rare
         event.
 
   Process Farm Limitations
@@ -94,7 +94,7 @@ OVERVIEW
     Child Process Memory Utilization
         By keeping an eye on total memory utilization, it appears that each
         bare child process uses roughly 2.3MB of memory. A child process
-        that also uses `Net::Ping' to implement a ping function uses roughly
+        that also uses "Net::Ping" to implement a ping function uses roughly
         2.6MB of memory. If you spin off 30 of these processes, that's 75MB
         of RAM. If you start swapping, the thrash of 30 processes running
         simultaneously is going to kill any speed benefit, so keep memory
@@ -111,6 +111,6 @@ OVERVIEW
 
   Further Information
 
-    Please see the "tutorial" in `Docs/tutorial.pod' for more information,
+    Please see the "tutorial" in "Docs/tutorial.pod" for more information,
     as well as the POD contained within the actual Perl modules.
 

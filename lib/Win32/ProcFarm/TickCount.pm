@@ -3,7 +3,7 @@
 # Win32::ProcFarm::TickCount - method for safely comparing GetTickCount values
 #
 # Author: Toby Everett
-# Revision: 2.13
+# Revision: 2.14
 # Last Change: Patch to enable operations when 2**32 == 0
 #############################################################################
 # Copyright 1999, 2000, 2001 Toby Everett.  All rights reserved.
@@ -21,7 +21,7 @@ package Win32::ProcFarm::TickCount;
 use strict;
 use vars qw($VERSION);
 
-$VERSION = '2.13';
+$VERSION = '2.14';
 
 sub compare {
   my($a, $b) = @_;

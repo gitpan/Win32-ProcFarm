@@ -3,7 +3,7 @@
 # Win32::ProcFarm::PerpetualPool - manages a pool of child processes for perpetual jobs
 #
 # Author: Toby Everett
-# Revision: 2.13
+# Revision: 2.14
 # Last Change: Patched to fix problems when Win32::GetTickCount > 2**31
 #############################################################################
 # Copyright 1999, 2000 Toby Everett.  All rights reserved.
@@ -68,7 +68,7 @@ package Win32::ProcFarm::PerpetualPool;
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.13';
+$VERSION = '2.14';
 
 @ISA = qw(Win32::ProcFarm::Pool);
 

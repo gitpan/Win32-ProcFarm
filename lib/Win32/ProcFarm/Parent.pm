@@ -3,8 +3,8 @@
 # Win32::ProcFarm::Parent - stand-in for child process in ProcFarm RPC system
 #
 # Author: Toby Everett
-# Revision: 2.13
-# Last Change: Namespace change
+# Revision: 2.14
+# Last Change: Added support for exe-based child process
 #############################################################################
 # Copyright 1999, 2000, 2001 Toby Everett.  All rights reserved.
 #
@@ -99,7 +99,7 @@ package Win32::ProcFarm::Parent;
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.13';
+$VERSION = '2.14';
 
 $Win32::ProcFarm::Parent::unique = 0;
 $Win32::ProcFarm::Parent::processes = {};
@@ -164,9 +164,15 @@ sub _new_async {
   my $process;
   my $unique = $Win32::ProcFarm::Parent::unique++;
   my $port_num = $self->{port_obj}->get_port_num;
-  (my $perl_exe = $^X) =~ s/\\[^\\]+$/\\Perl.exe/;
-  Win32::Process::Create($process, $perl_exe, "perl $self->{script} $port_num $unique", 0, 0, $self->{curdir}) or
-      die "Unable to start child process.\n";
+  my $script = $self->{script};
+  if ($script =~ /\.exe$/i) {
+    Win32::Process::Create($process, $script, "$script $port_num $unique", 0, 0, $self->{curdir}) or
+        die "Unable to start child process using '$script'.\n";
+  } else {
+    (my $perl_exe = $^X) =~ s/\\[^\\]+$/\\Perl.exe/;
+    Win32::Process::Create($process, $perl_exe, "perl $script $port_num $unique", 0, 0, $self->{curdir}) or
+        die "Unable to start child process using '$perl_exe'.\n";
+  }
   $Win32::ProcFarm::Parent::processes->{$unique} = $process;
   $self->{state} = 'init';
   return $self;
