@@ -1,5 +1,12 @@
 Revision history for Perl extension Win32::ProcFarm
 
+2.12  Wed Jun 26 11:00:00 2001
+        - Removed directories from MANIFEST
+        - Fixed various Win32::GetTickCount() wrap-around bugs
+
+2.11  Wed Feb 14 12:01:00 2001
+        - Updated README file to be based on Docs/overview.pod
+
 2.10  Wed Feb 14 12:00:00 2001
         - Added Win32::ProcFarm::PerpetualPool
         - Lots of bugs cleaned up

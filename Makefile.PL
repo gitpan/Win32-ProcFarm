@@ -10,6 +10,7 @@ WriteMakefile(
     'Win32/ProcFarm/PerpetualPool.pm' =>  '$(INST_LIBDIR)/PerpetualPool.pm',
     'Win32/ProcFarm/Pool.pm' =>           '$(INST_LIBDIR)/Pool.pm',
     'Win32/ProcFarm/Port.pm' =>           '$(INST_LIBDIR)/Port.pm',
+    'Win32/ProcFarm/TickCount.pm' =>      '$(INST_LIBDIR)/TickCount.pm',
     'Win32/ProcFarm/TkPool.pm' =>         '$(INST_LIBDIR)/TkPool.pm',
   },
 );

@@ -4,7 +4,7 @@
 #                           callbacks under a Tk event loop
 #
 # Author: Toby Everett
-# Revision: 2.11
+# Revision: 2.12
 # Last Change: Modified in response to rearchitecture of Win32::ProcFarm::Pool
 #############################################################################
 # Copyright 1999, 2000, 2001 Toby Everett.  All rights reserved.
@@ -41,7 +41,7 @@ package Win32::ProcFarm::TkPool;
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.11';
+$VERSION = '2.12';
 
 @ISA = qw(Win32::ProcFarm::Pool);
 

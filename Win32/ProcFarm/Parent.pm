@@ -3,7 +3,7 @@
 # Win32::ProcFarm::Parent - stand-in for child process in ProcFarm RPC system
 #
 # Author: Toby Everett
-# Revision: 2.11
+# Revision: 2.12
 # Last Change: Namespace change
 #############################################################################
 # Copyright 1999, 2000, 2001 Toby Everett.  All rights reserved.
@@ -92,13 +92,14 @@ object back into the C<idle> state.
 use Data::Dumper;
 use Win32::Process;
 use Win32::ProcFarm::Port;
+use Win32::ProcFarm::TickCount;
 
 package Win32::ProcFarm::Parent;
 
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.11';
+$VERSION = '2.12';
 
 $Win32::ProcFarm::Parent::unique = 0;
 $Win32::ProcFarm::Parent::processes = {};
@@ -245,7 +246,7 @@ sub get_state {
       $self->{retval} = $self->_get_retval;
       $self->{state} = 'fin';
     } else {
-      if ($self->{timeout} and Win32::GetTickCount() - $self->{start} > 1000 * $self->{timeout}) {
+      if ($self->{timeout} and Win32::ProcFarm::TickCount::compare(1000*$self->{timeout}+$self->{start}, Win32::GetTickCount()) == -1) {
         $self->_reset();
       }
     }

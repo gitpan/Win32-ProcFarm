@@ -3,7 +3,7 @@
 # Win32::ProcFarm::PerpetualPool - manages a pool of child processes for perpetual jobs
 #
 # Author: Toby Everett
-# Revision: 2.11
+# Revision: 2.12
 # Last Change: Created
 #############################################################################
 # Copyright 1999, 2000 Toby Everett.  All rights reserved.
@@ -61,13 +61,14 @@ pool.
 =cut
 
 use Win32::ProcFarm::Pool;
+use Win32::ProcFarm::TickCount;
 
 package Win32::ProcFarm::PerpetualPool;
 
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.11';
+$VERSION = '2.12';
 
 @ISA = qw(Win32::ProcFarm::Pool);
 
@@ -148,12 +149,12 @@ sub start_pool {
 sub cleanse_and_dispatch {
   my $self = shift;
 
-  if ($self->{next_list_check} < Win32::GetTickCount()) {
+  if (Win32::ProcFarm::TickCount::compare($self->{next_list_check}, Win32::GetTickCount()) == -1) {
     $self->list_check();
     $self->{next_list_check} = Win32::GetTickCount() + $self->{list_check_intvl} * 1000;
   }
 
-  if ($self->{next_exit_check} < Win32::GetTickCount()) {
+  if (Win32::ProcFarm::TickCount::compare($self->{next_exit_check}, Win32::GetTickCount()) == -1) {
     $self->exit_check();
     $self->{next_exit_check} = Win32::GetTickCount() + $self->{exit_check_intvl} * 1000;
   }
