@@ -3,7 +3,7 @@
 # Win32::ProcFarm::Parent - stand-in for child process in ProcFarm RPC system
 #
 # Author: Toby Everett
-# Revision: 2.10
+# Revision: 2.11
 # Last Change: Namespace change
 #############################################################################
 # Copyright 1999, 2000, 2001 Toby Everett.  All rights reserved.
@@ -98,7 +98,7 @@ package Win32::ProcFarm::Parent;
 use strict;
 use vars qw($VERSION @ISA);
 
-$VERSION = '2.10';
+$VERSION = '2.11';
 
 $Win32::ProcFarm::Parent::unique = 0;
 $Win32::ProcFarm::Parent::processes = {};
